@@ -112,4 +112,7 @@ class OpenAI extends OpenAIClientBase {
 
   /// The constructor of [OpenAI]. It is private, so you can only access the instance by calling the [OpenAI.instance] getter.
   OpenAI._();
+
+  /// only for manual injection
+  OpenAI.create();
 }
