@@ -114,13 +114,13 @@ registerOpenAIDioInstance({String sk = 'sk-xxx', String? org}) {
   assert(sk != 'sk-xxx', 'You must input your openai secret key. (sk)');
   GetIt.I.registerSingleton<Dio>(
     Dio(BaseOptions(baseUrl: 'https://api.openai.com/v1/'))
-      ..interceptors.add(InterceptorsWrapper(onRequest: (op, handler) {
-        op.headers.addAll({
-          "Content-Type": "application/json",
-          "Authorization": "Bearer $sk",
-          if (org != null) "OpenAI-Organization": '$org',
-        });
-      })),
+          ..headers.addAll({
+            "Content-Type": (op.method == 'POST' && op.data is FormData)
+                ? "multipart/form-data"
+                : "application/json",
+            "Authorization": "Bearer $sk",
+            if (org != null) "OpenAI-Organization": '$org',
+          })),
     // must add instance name [OpenAIStrings.openai]
     instanceName: OpenAIStrings.openai,
   );
