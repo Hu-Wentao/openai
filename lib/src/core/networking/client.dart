@@ -458,6 +458,7 @@ class OpenAINetworkingClient {
     bool returnRawResponse = false,
     T Function(Map<String, dynamic>)? onSuccess,
   }) async {
+    try {
       final response = await _dio.get(
         from,
         // options: Options(headers: HeadersBuilder.build()),
@@ -478,12 +479,29 @@ class OpenAINetworkingClient {
       } else {
         return onSuccess!(decodedBody);
       }
+    } on DioError catch (e) {
+      if (e.response != null) {
+        final decodedBody = e.response!.data as Map<String, dynamic>;
+        if (decodedBody['error'] != null) {
+          final error = decodedBody['error'];
+          throw RequestFailedException(
+            error["message"],
+            e.response!.statusCode ?? 0,
+          );
+        }
+      }
+      throw RequestFailedException(
+        '${e.message}',
+        e.response?.statusCode ?? 0,
+      );
+    }
   }
 
   static Stream<T> _getStream<T>({
     required String from,
     required T Function(Map<String, dynamic>) onSuccess,
   }) async* {
+    try {
       final response = await _dio.get(
         from,
         options: Options(responseType: ResponseType.stream),
@@ -511,6 +529,22 @@ class OpenAINetworkingClient {
           }
         }
       }
+    } on DioError catch (e) {
+      if (e.response != null) {
+        final decodedBody = e.response!.data as Map<String, dynamic>;
+        if (decodedBody['error'] != null) {
+          final error = decodedBody['error'];
+          throw RequestFailedException(
+            error["message"],
+            e.response!.statusCode ?? 0,
+          );
+        }
+      }
+      throw RequestFailedException(
+        '${e.message}',
+        e.response?.statusCode ?? 0,
+      );
+    }
   }
 
   static Future<T> _post<T>({
@@ -518,6 +552,7 @@ class OpenAINetworkingClient {
     required T Function(Map<String, dynamic>) onSuccess,
     Map<String, dynamic>? body,
   }) async {
+    try {
       final response = await _dio.post(
         to,
         data: body,
@@ -535,6 +570,22 @@ class OpenAINetworkingClient {
       } else {
         return onSuccess(decodedBody);
       }
+    } on DioError catch (e) {
+      if (e.response != null) {
+        final decodedBody = e.response!.data as Map<String, dynamic>;
+        if (decodedBody['error'] != null) {
+          final error = decodedBody['error'];
+          throw RequestFailedException(
+            error["message"],
+            e.response!.statusCode ?? 0,
+          );
+        }
+      }
+      throw RequestFailedException(
+        '${e.message}',
+        e.response?.statusCode ?? 0,
+      );
+    }
   }
 
   static Stream<T> _postStream<T>({
@@ -544,6 +595,7 @@ class OpenAINetworkingClient {
   }) async* {
     StreamController<T> controller = StreamController<T>();
 
+    try {
       Response<ResponseBody> response = await _dio.post(
         to,
         data: body,
@@ -573,6 +625,22 @@ class OpenAINetworkingClient {
           }
         }
       }
+    } on DioError catch (e) {
+      if (e.response != null) {
+        final decodedBody = e.response!.data as Map<String, dynamic>;
+        if (decodedBody['error'] != null) {
+          final error = decodedBody['error'];
+          throw RequestFailedException(
+            error["message"],
+            e.response!.statusCode ?? 0,
+          );
+        }
+      }
+      throw RequestFailedException(
+        '${e.message}',
+        e.response?.statusCode ?? 0,
+      );
+    }
 
     yield* controller.stream;
   }
@@ -592,6 +660,7 @@ class OpenAINetworkingClient {
     });
     // final options = Options(headers: HeadersBuilder.build());
 
+    try {
       Response response = await _dio.post(
         to,
         data: formData,
@@ -619,6 +688,22 @@ class OpenAINetworkingClient {
           response.statusCode ?? 0,
         );
       }
+    } on DioError catch (e) {
+      if (e.response != null) {
+        final decodedBody = e.response!.data as Map<String, dynamic>;
+        if (decodedBody['error'] != null) {
+          final error = decodedBody['error'];
+          throw RequestFailedException(
+            error["message"],
+            e.response!.statusCode ?? 0,
+          );
+        }
+      }
+      throw RequestFailedException(
+        '${e.message}',
+        e.response?.statusCode ?? 0,
+      );
+    }
   }
 
   static Future<T> _imageVariationForm<T>({
